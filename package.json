@@ -1,0 +1,13 @@
+{
+  "name": "number-discussion-backend",
+  "version": "1.0.0",
+  "description": "Backend for number discussion platform",
+  "scripts": {
+    "build": "cd backend && npm ci && npm run build",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
