@@ -1,16 +1,32 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
 import calculationsRoutes from './routes/calculations.routes';
+import { corsOptions } from './config/cors';
+import { apiLimiter } from './middleware/rate-limit.middleware';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+// Security middleware
+app.use(helmet()); // Security headers
+app.use(cors(corsOptions)); // CORS with proper configuration
+app.use(express.json({ limit: '10mb' })); // Body size limit
+
+// Logging
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined')); // Detailed logging for production
+} else {
+  app.use(morgan('dev')); // Concise logging for development
+}
+
+// Rate limiting
+app.use('/api', apiLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/calculations', calculationsRoutes);
