@@ -11,6 +11,13 @@ A RESTful API backend for a collaborative number calculation platform where user
 - Full test coverage with Jest
 - Dockerized for easy deployment
 - TypeScript for type safety
+- **Security Features**:
+  - Rate limiting (API, auth, and creation endpoints)
+  - CORS protection with environment-based origins
+  - Security headers (Helmet)
+  - Request logging (Morgan)
+  - Password hashing (bcrypt)
+  - Input validation and sanitization
 
 ## Tech Stack
 
@@ -161,6 +168,7 @@ railway add --database postgres
 ```
 NODE_ENV=production
 JWT_SECRET=<generate-a-strong-secret>
+ALLOWED_ORIGINS=https://your-frontend-domain.vercel.app
 ```
 
 5. Deploy:
@@ -177,6 +185,7 @@ Required environment variables:
 - `PORT` - Server port (default: 3000)
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - Secret key for JWT token generation
+- `ALLOWED_ORIGINS` - Comma-separated list of allowed frontend URLs for CORS (e.g., `https://app.vercel.app,https://www.app.com`)
 
 ## Project Structure
 
@@ -216,11 +225,19 @@ number-discussion-backend/
 
 ## Security Considerations
 
-- Passwords are hashed using bcrypt with salt rounds
-- JWT tokens are used for authentication
-- Environment variables for sensitive data
-- SQL injection prevention through parameterized queries
-- CORS enabled (configure allowed origins for production)
+- **Rate Limiting**: Prevents brute force attacks and API abuse
+  - General API: 100 requests per 15 minutes
+  - Auth endpoints: 5 attempts per 15 minutes
+  - Creation endpoints: 10 requests per minute
+- **CORS Protection**: Environment-based origin restrictions
+- **Security Headers**: Helmet middleware for XSS, clickjacking protection
+- **Password Hashing**: Bcrypt with 10 salt rounds
+- **JWT Authentication**: Secure token-based authentication
+- **Input Validation**: Request body size limits and sanitization
+- **SQL Injection Prevention**: Parameterized queries
+- **Request Logging**: Morgan middleware for monitoring and debugging
+
+For detailed security information, see [SECURITY.md](backend/SECURITY.md)
 
 ## Contributing
 
